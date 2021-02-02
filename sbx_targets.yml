@@ -1,0 +1,28 @@
+- targets:
+  - 'sbx-1.kafka.example.net'
+  - 'sbx-exaple-host-group-node-2.kafka.example.net'
+  - 'sbx-exaple-host-group-node-3.kafka.example.net'
+  - 'sbx-exaple-host-group-node-1.kafka.example.net'
+  - 'sbx-exaple-host-group-node-2.kafka.example.net'
+  - 'sbx-exaple-host-group-node-3.kafka.example.net'
+  labels:
+    cluster: sbx-Exaple-Host-group-node.kafka
+    version: "(.)(.)"
+- targets:
+  - 'sbx-exaple-host-group-node-1.hadoop.example.net'   
+  - 'sbx-exaple-host-group-node-2.hadoop.example.net'   
+  - 'sbx-exaple-host-group-node-3.hadoop.example.net'   
+  - 'sbx-exaple-host-group-node-4.hadoop.example.net'   
+  - 'sbx-exaple-host-group-node-5.hadoop.example.net'   
+  - 'sbx-exaple-host-group-node-6.hadoop.example.net'   
+  - 'sbx-exaple-host-group-node-1.hadoop.example.net'  
+  - 'sbx-exaple-host-group-node-1.hadoop.example.net' 
+  - 'sbx-exaple-host-group-node-2.hadoop.example.net' 
+  - 'sbx-exaple-host-group-node-1.hadoop.example.net'
+  - 'sbx-exaple-host-group-node-2.hadoop.example.net'
+  - 'sbx-exaple-host-group-node-3.hadoop.example.net'
+  - 'sbx-exaple-host-group-node-4.hadoop.example.net'
+  - 'sbx-exaple-host-group-node-5.hadoop.example.net'
+  labels:
+    cluster: exaple-host-group-node.hadoop
+    version: "8=====D (/\)"

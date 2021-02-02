@@ -1,0 +1,162 @@
+project_id: "My-Super-Sample-project-in-GCP"
+
+
+# my global config
+global:
+  scrape_interval:     15s 
+  # Set the scrape interval to every 15 seconds. Default is every 1 minute.
+  evaluation_interval: 15s 
+  # Evaluate rules every 15 seconds. The default is every 1 minute.
+  # scrape_timeout is set to the global default (10s).
+
+# Alertmanager configuration
+alerting:
+  alertmanagers:
+  - static_configs:
+    - targets:
+      # - alertmanager:9093
+
+# Load rules once and periodically evaluate them according to the global 'evaluation_interval'.
+rule_files:
+  # - "first_rules.yml"
+  # - "second_rules.yml"
+
+# A scrape configuration containing exactly one endpoint to scrape:
+# Here it's Prometheus itself.
+scrape_configs:
+# The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
+##########################################################################
+#################   Prometheus Host Metric Collection ####################
+##########################################################################
+  - job_name: 'prometheus'
+    static_configs:
+    - targets:
+      - 'localhost:9090'
+##########################################################################
+#################   Prometheus Host Metric Collection ####################
+##########################################################################
+
+
+##########################################################################
+#################   Static Endpoint Metric Collection ####################
+##########################################################################
+  - job_name: 'kafka'
+    static_configs:
+    - targets:
+      - localhost:9921
+##########################################################################
+#################   Static Endpoint Metric Collection ####################
+##########################################################################
+
+###############################################################################
+#################   Static Collection from Inventory File  ####################
+###############################################################################
+  - job_name: 'overwritten-default'
+    file_sd_configs:
+    - names: ['tgroups/*.yml']
+###############################################################################
+#################   Static Collection from Inventory File  ####################
+###############################################################################
+
+
+#####################################################################################################
+################## Dinamic Collection from ONE Project base on Service Account  #####################
+#####################################################################################################
+- job_name: node_gce
+    gce_sd_configs:
+      - zone: us-west1-a
+        project: "{{project_id}}"
+      - zone: us-west1-b
+        project: "{{project_id}}"
+      - zone: us-west1-c
+        project: "{{project_id}}"
+    relabel_configs:
+      - source_labels: [__meta_gce_public_ip]
+        target_label: __address__
+        replacement: "${1}:9090"
+      - source_labels: [__meta_gce_zone]
+        regex: ".+/([^/]+)"
+        target_label: zone
+      - source_labels: [__meta_gce_project]
+        target_label: project
+      - source_labels: [__meta_gce_instance_name]
+        target_label: instance
+      - regex: "__meta_gce_metadata_(.+)"
+        action: labelmap
+
+#####################################################################################################
+################## Dinamic Collection from ONE Project base on Service Account  #####################
+#####################################################################################################
+
+
+
+
+
+Promethus Instance Must have a View Permissions 
+
+################################################################################################################
+################## Dinamic Collection from Multi Projects base on Intance Service Account  #####################
+################################################################################################################
+- job_name: "gcp_kafka_collectd"
+    honor_timestamps: true
+    scrape_interval: 30s
+    scrape_timeout: 15s
+    metrics_path: /metrics
+    scheme: http
+    relabel_configs:
+      - source_labels: [__meta_gce_label_environment]
+        target_label: environment
+      - source_labels: [__meta_gce_zone]
+        regex: ".*/(.*)"
+        target_label: zone
+      - source_labels: [__meta_gce_zone]
+        regex: ".*/(.*[0-9]).*"
+        target_label: region
+    gce_sd_configs:
+      - project: project-1
+        zone: REGION_ZONE-a
+        port: 11
+        filter: labels.filtering=Applcation_Name
+      - project: project-1
+        zone: REGION_ZONE-b
+        port: 11
+        filter: labels.filtering=Applcation_Name
+      - project: project-1
+        zone: REGION_ZONE-c
+        port: 11
+        filter: labels.filtering=Applcation_Name
+      ###########################################
+      ## Collectd :: DEV :: US-W1
+      - project: project-1
+        zone: REGION_ZONE-a
+        port: 11
+        filter: labels.filtering=Applcation_Name
+      - project: project-1
+        zone: REGION_ZONE-b
+        port: 11
+        filter: labels.filtering=Applcation_Name
+      - project: project-1
+        zone: REGION_ZONE-c
+        port: 11
+        filter: labels.filtering=Applcation_Name
+      ###########################################
+      ## Collectd :: INT :: AU-SE1
+      - project: project-3
+        zone: REGION_ZONE-a
+        port: 11
+        filter: labels.filtering=Applcation_Name
+      - project: project-3
+        zone: REGION_ZONE-b
+        port: 11
+        filter: labels.filtering=Applcation_Name
+      - project: project-3
+        zone: REGION_ZONE-c
+        port: 11
+        filter: labels.filtering=Applcation_Name
+################################################################################################################
+################## Dinamic Collection from Multi Projects base on Intance Service Account  #####################
+################################################################################################################      
+
+
+
+    
